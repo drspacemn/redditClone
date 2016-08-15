@@ -1,0 +1,62 @@
+
+main {
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	flex-direction: column;
+}
+
+.post {
+	width: 95%;
+	height: 200px;
+	min-width: 984px;
+	background: #F7F7F7;
+	border: 1px solid lightgrey;
+	border-radius: 3px;
+	padding: 0;
+	margin: 0 auto;
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	flex-direction: row;
+	margin-bottom: 10px;
+	overflow: scroll;
+}
+
+.pic {
+	padding: 15px;
+	flex: 1;
+	display: flex;
+	justify-content: center;
+	align-content: center;
+}
+
+.deats {
+	flex: 4;
+	padding: 10px;
+	border-left: 1px solid lightgrey;
+}
+
+img {
+	width: 100%;
+}
+
+
+h2 {
+	font-size: 18px;
+}
+
+.red {
+	color: red;
+}
+.green {
+	color: green;
+}
+
+form {
+	margin: 0 50px;
+}
+
+.small {
+	font-size: 16px;
+}

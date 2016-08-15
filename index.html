@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html ng-app='myApp'>
+	<head>
+		<meta charset="utf-8">
+		<title>Reddit Clone</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/main.css" media="screen" title="no title" charset="utf-8">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.5.1/moment.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment/0.10.3/angular-moment.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular-messages.js"></script>
+		<script src="/app.js" charset="utf-8"></script>
+	</head>
+	<body ng-controller='myController' ng-cloak>
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+		    <!-- Brand and toggle get grouped for better mobile display -->
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		      <a class="navbar-brand" href="#">Reddit Clone</a>
+		    </div>
+
+		    <!-- Collect the nav links, forms, and other content for toggling -->
+		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      <ul class="nav navbar-nav">
+		        <li ng-click='formDrop()'><a href="#">+Submit Posts</a></li>
+		      </ul>
+		      <form class="navbar-form navbar-left">
+		        <div class="form-group">
+		          <input type="text" class="form-control" ng-model='searchText' placeholder="Search">
+		        </div>
+		      </form>
+		      <ul class="nav navbar-nav navbar-left">
+		        <li class="dropdown">
+		          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Sort By {{view.sort}} <span class="caret"></span></a>
+		          <ul class="dropdown-menu">
+									<li ng-click="sort('-clicks')"><a href="#">Votes</a></li>
+									<li ng-click="sort('date')"><a href="#">Date</a></li>
+									<li ng-click="sort('title')"><a href="#">Title</a></li>
+		          </ul>
+		        </li>
+		      </ul>
+		    </div><!-- /.navbar-collapse -->
+		  </div><!-- /.container-fluid -->
+		</nav>
+		<main>
+			<div class="formCity" ng-show='form'>
+			<form name='myForm' action="javascript:void(0)" ng-submit='submit()'>
+				<div ng-class="{'form-group': myForm.title.$pristine, 'has-error': (myForm.title.$invalid && myForm.title.$dirty), 'has-success': myForm.title.$valid}">
+					<label class="control-label" for="title">Title</label>
+					<input type="text" class="form-control" name="title" ng-model='user.title'
+					required>
+				</div>
+
+				<div ng-class="{'form-group': myForm.author.$pristine, 'has-error': (myForm.author.$invalid && myForm.author.$dirty), 'has-success': myForm.author.$valid}">
+					<label class="control-label" ng-class="{'has-error': formCity.author.$invalid}"for="author">Author</label>
+					<input type="text" class="form-control" name='author' ng-model="user.author"
+					required>
+				</div>
+
+				<div ng-class="{'form-group': myForm.url.$pristine, 'has-error': (myForm.url.$invalid && myForm.url.$dirty), 'has-success': myForm.url.$valid}">
+					<label class="control-label"for="url">Image URL</label>
+					<input type="url" class="form-control" name="url" ng-model='user.url'
+					required>
+				</div>
+
+
+				<div ng-class="{'form-group': myForm.description.$pristine, 'has-error': (myForm.description.$invalid && myForm.description.$dirty), 'has-success': myForm.description.$valid}">
+					<label class="control-label"for="description">Description</label>
+					<input type="text" class="form-control" name="description" ng-model='user.description'
+					required>
+				</div>
+
+				<input type="submit" class="btn" value="Submit Post">
+			</form>
+		</div>
+			<div class="post" ng-repeat="post in data | orderBy:dif | filter:searchText">
+				<div class="pic">
+					<img ng-src="{{post.url}}" alt="sry img nt fnd" />
+				</div>
+				<div class="deats">
+					<div class="title">
+						<h2>{{post.title}} | <span class="glyphicon glyphicon-arrow-up" ng-click='ups(post)' aria-hidden="true"></span>
+						<span class="glyphicon glyphicon-arrow-down" ng-click='downs(post)' aria-hidden="true"></span> <span ng-class="{red: post.clicks < 0,green: post.clicks > 0}" >{{post.clicks}}</span></h2>
+					</div>
+					<div class="description">
+						<h5>{{post.author}}</h5>
+						<p>
+							{{post.description}}
+						</p>
+					</div>
+					<div class="footer">
+							<h5><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+								{{post.date | amTimeAgo}} |
+								<span ng-click='switchComment(post)' class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+								<ng-pluralize count="post.comments.length"
+																when="{'0': 'No comments',
+																		'one': '1 comment',
+																		'other': '{} comments'}">
+								</ng-pluralize>
+								| <span ng-click='addComment(post)' class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+								add comment
+							</h5>
+					</div>
+					<div class="addForm" ng-show='post.add'>
+						<form name='commentForm' ng-submit='commentForReal(post)'>
+							<label for="author">Author: </label>
+							<input type="text" name="author" ng-model='comment.author'>
+							<label for="comment">Comment: </label>
+							<input type="text" name="comment" ng-model='comment.commentz'>
+							<input type="submit" name="name" value="submit comment">
+					</form>
+					</div>
+					<div class="comments" ng-repeat='comment in post.comments' ng-show='post.commentOn'>
+						<h5>{{comment.author}} <span class="small">- {{comment.commentz}}</span></h5>
+					</div>
+
+				</div>
+			</div>
+		</main>
+		<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	</body>
+</html>
